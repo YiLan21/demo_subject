@@ -20,439 +20,291 @@ import com.example.demo_subject.vo.SubjectRes;
 public class StudentSubjectServiceImpl implements StudentSubjectService {
 
 	@Autowired
-	private StudentDao studentDao;
+	private StudentDao studentDao; // 連接兩個資料庫 (StudentDao /SubjectDao)
 	@Autowired
 	private SubjectDao subjectDao;
 
-	// 1.取得全部課程資訊
+	// 1.建立課程 :輸入課程代碼,課程名稱,課程星期,課程開始時間,課程結束時間,課程學分
 	@Override
-	public List<Subject> getSubjectInfo() {
-		List<Subject> list = subjectDao.findAll();
-		return list;
-	}
-
-	// 2.建立課程
-	@Override
-	public SubjectRes creatSubject(String subNumber, String subName, Integer subDate, Integer startTime,
+	public SubjectRes creatSubject(String subjectNumber, String subjectName, Integer subjectDate, Integer startTime,
 			Integer endTime, Integer units) {
-		SubjectRes res = new SubjectRes();
-		if (!StringUtils.hasText(subNumber) || !StringUtils.hasText(subName)) {
-//			res.setMessage("輸入資訊錯誤");
-			res.setMessage(StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
-			return res;
-		}
-		if (!StringUtils.hasText(subName)) {
-//			res.setMessage("課程名稱錯誤");
-			res.setMessage(StudentSubjectRtnCode.CLASS_REQIRED.getMessage());
-			return res;
-		}
-		if (subDate > 6 || subDate < 1) {
-//			res.setMessage("輸入星期格式錯誤");
-			res.setMessage(StudentSubjectRtnCode.DATE_REQIRED.getMessage());
-			return res;
-		}
-		if (startTime > 16 || startTime < 9 || startTime >= endTime || startTime == null) {
-//			res.setMessage("上課時間錯誤");
-			res.setMessage(StudentSubjectRtnCode.DATE_REQIRED.getMessage());
-			return res;
-		}
-		if (endTime > 18 || endTime < 11 || endTime == null) {
-//			res.setMessage("結束時間錯誤");
-			res.setMessage(StudentSubjectRtnCode.DATE_REQIRED.getMessage());
-			return res;
+
+		// 判斷(subjectNumber, subjectName )內容是否為空
+		SubjectRes subjectInforeSult = checkSubjectNumberSubjectName(subjectNumber, subjectName);
+		if (subjectInforeSult != null) {
+			return subjectInforeSult;
 		}
 
-		if (units > 3 || units < 1 || units == null) {
-//			res.setMessage("學分錯誤");
-			res.setMessage(StudentSubjectRtnCode.UNITS_REQIRED.getMessage());
-			return res;
+		// 判斷內容是否為空
+		SubjectRes classInforeSult = checkSubjectDateStartTimeEanTimeUnits(subjectDate, startTime, endTime, units);
+		if (classInforeSult != null) {
+			return classInforeSult;
 		}
-		Optional<Subject> subOp = subjectDao.findById(subNumber); //
+
+		// 調閱資料庫課程代碼並且判斷是否重複,若有則回傳訊息並且跳出，
+		SubjectRes res = new SubjectRes();
+		Optional<Subject> subOp = subjectDao.findById(subjectNumber);
+
 		if (subOp.isPresent()) {
-//			res.setMessage("此課程已存在");
 			res.setMessage(StudentSubjectRtnCode.HASCLASS_REQIRED.getMessage());
 			return res;
 		}
-		Subject subject = new Subject(subNumber, subName, subDate, startTime, endTime, units);
+
+		// 使用自訂建構方法代數參數 並存回資料庫.在結果顯示建立的課程
+		// 當條件符合存入後回傳成功
+		Subject subject = new Subject(subjectNumber, subjectName, subjectDate, startTime, endTime, units);
 		subjectDao.save(subject);
 		res.setSubject(subject);
-//		res.setMessage("成功建立");
 		res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
-
 		return res;
 	}
 
-	// 3.更改課程內容 //
-	public SubjectRes reviseSubject(String subNumber, String subName, Integer subDate, Integer startTime,
+	/**
+	 * 檢驗 課程代碼(subNumber) & 課程名稱subjectName(subName) 是否有值
+	 */
+	private SubjectRes checkSubjectNumberSubjectName(String subNumber, String subName) {
+
+		if (!StringUtils.hasText(subNumber) || !StringUtils.hasText(subName)) {
+
+			return new SubjectRes(null, StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * 檢驗 課堂星期(subDate) & 上課時間(startTime) & 結束時間(endTime) & 學分數(units) 格式是否正確
+	 */
+	private SubjectRes checkSubjectDateStartTimeEanTimeUnits(Integer subjectDate, Integer startTime, Integer endTime,
+			Integer units) {
+
+		if (subjectDate > 6 || subjectDate < 1 || subjectDate == null) {
+			return new SubjectRes(null, StudentSubjectRtnCode.DATE_REQIRED.getMessage());
+		}
+
+		if (startTime > 16 || startTime < 9 || startTime >= endTime || startTime == null) {
+			return new SubjectRes(null, StudentSubjectRtnCode.DATE_REQIRED.getMessage());
+		}
+
+		if (endTime > 18 || endTime < 11 || endTime == null) {
+			return new SubjectRes(null, StudentSubjectRtnCode.DATE_REQIRED.getMessage());
+		}
+
+		if (units > 3 || units < 1 || units == null) {
+			return new SubjectRes(null, StudentSubjectRtnCode.UNITS_REQIRED.getMessage());
+		}
+
+		return null;
+	}
+
+	// 2.更改課程內容:變更課程代碼,課程名稱,課程星期,課程開始時間,課程結束時間,課程學分
+	@Override
+	public SubjectRes reviseSubject(String subjectNumber, String subjectName, Integer subjectDate, Integer startTime,
 			Integer endTime, Integer units) {
 
+		// 判斷內容是否為空
+		SubjectRes subjectInforeSult = checkSubjectNumberSubjectName(subjectNumber, subjectName);
+		if (subjectInforeSult != null) {
+			return subjectInforeSult;
+		}
+
+		// 判斷內容是否為空
+		SubjectRes classInforeSult = checkSubjectDateStartTimeEanTimeUnits(subjectDate, startTime, endTime, units);
+		if (classInforeSult != null) {
+			return classInforeSult;
+		}
+
+		// 判斷有無此課程，若無則回傳訊息並且跳出，
 		SubjectRes res = new SubjectRes();
-		if (!StringUtils.hasText(subNumber) || !StringUtils.hasText(subName)) {
-//			res.setMessage("輸入資訊錯誤");
-			res.setMessage(StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
+		Optional<Subject> subOp = subjectDao.findById(subjectNumber);
+
+		if (!subOp.isPresent()) {
+			res.setMessage(StudentSubjectRtnCode.NOCLASS_REQIRED.getMessage());
 			return res;
 		}
 
-		if (!StringUtils.hasText(subNumber)) {
-//			res.setMessage("課程代碼格式錯誤");
-			res.setMessage(StudentSubjectRtnCode.DUBCLASS_REQIRED.getMessage());
-			return res;
-		}
-		Optional<Subject> subOp = subjectDao.findById(subNumber); //
-		if (!subOp.isPresent()) {// 找到學生資料.if(!)學生的資訊=跳出if(true)學生的資訊keep going
-//			res.setMessage("此課程不存在");
-			res.setMessage(StudentSubjectRtnCode.NOSTUDENTINFO_REQIRED.getMessage());
-			return res;
-		}
-		if (!StringUtils.hasText(subName)) {
-//			res.setMessage("課程名稱錯誤");
-			res.setMessage(StudentSubjectRtnCode.DUBCLASS_REQIRED.getMessage());
-			return res;
-		}
-		if (subDate >= 5 || subDate < 1 || units == null) {
-//			res.setMessage("輸入星期格式錯誤");
-			res.setMessage(StudentSubjectRtnCode.DATE_REQIRED.getMessage());
-			return res;
-		}
-		if (startTime > 16 || startTime < 9 || startTime >= endTime || startTime == null) {
-//			res.setMessage("上課時間錯誤");
-			res.setMessage(StudentSubjectRtnCode.DATE_REQIRED.getMessage());
-			return res;
-		}
-		if (endTime > 18 || endTime < 11 || endTime == null) {
-//			res.setMessage("結束時間錯誤");
-			res.setMessage(StudentSubjectRtnCode.DATE_REQIRED.getMessage());
-			return res;
-		}
-		if (units > 3 || units < 1 || units == null) {
-//			res.setMessage("學分錯誤");
-			res.setMessage(StudentSubjectRtnCode.UNITS_REQIRED.getMessage());
-			return res;
-		}
-
-		Subject subject1 = subOp.get();// 要再判斷又沒有值之後再get
-		Subject subject = new Subject(subNumber, subName, subDate, startTime, endTime, units);
-
+		// 使用建構方法帶入參數後儲存到資料庫。取得更改的資訊後 列出,當條件符合存入後回傳成功。
+		Subject subject = new Subject(subjectNumber, subjectName, subjectDate, startTime, endTime, units);
 		subjectDao.save(subject);
-		res.setSubject(subject1);
-		res.setMessage(subNumber + "修改成功!!!");
+		res.setSubject(subOp.get());
+		res.setMessage(subjectNumber + StudentSubjectRtnCode.SUCCESSFUL.getMessage());
 		return res;
+
 	}
 
-	// 4.刪除課程
+	// 3.刪除課程: 移除已存在的課程
 	@Override
-	public SubjectRes deletSubject(String subNumber) {
+	public SubjectRes deletSubject(String subjectNumber) {
 		SubjectRes res = new SubjectRes();
-
-		if (!StringUtils.hasText(subNumber)) {
-//			res.setMessage("課程代碼輸入錯誤");
+		// 判斷內容是否為空
+		if (!StringUtils.hasText(subjectNumber)) {
 			res.setMessage(StudentSubjectRtnCode.CLASS_REQIRED.getMessage());
 			return res;
-		} // 如果寫入的資料沒有東西就顯示資料錯ˋ (防呆1.)
-		if (!subjectDao.existsById(subNumber)) { // 如果資料庫裏面的資料跟我輸入的資料有符合則回傳有
-//			res.setMessage("查無此課程~~");
-			res.setMessage(StudentSubjectRtnCode.NOCLASSINFO_REQIRED.getMessage());
+		}
+		// 如果資料庫裏面的資料跟輸入的資料沒有符合則回訊息並且跳出
+		if (!subjectDao.existsById(subjectNumber)) {
+			res.setMessage(StudentSubjectRtnCode.NOCLASS_REQIRED.getMessage());
 			return res;
 		}
-		subjectDao.deleteById(subNumber);
-		res.setMessage("刪除課程" + subNumber + "成功");
+		// 當條件符合刪除課程,存入後回傳成功。
+		subjectDao.deleteById(subjectNumber);
+		res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
 		return res;
 	}
 
-	// 5.建立學生資訊
+	// 4.建立學生資訊 :輸入學生學號,學生姓名 。
 	@Override
-	public StudentRes createStudent(String stuNumber, String stuName) {
+	public StudentRes createStudent(String studentNumber, String studentName) {
 		StudentRes res = new StudentRes();
+		// 判斷內容是否為空
+		SubjectRes checkStudentNumberstudentName = checkStudentNumberstudentName(studentNumber, studentName);
 
-		if (!StringUtils.hasText(stuNumber)) {
-//			res.setMessage("帳號格式錯誤");
-			res.setMessage(StudentSubjectRtnCode.DOUSTUDENT_REQIRED.getMessage());
-			return res;
-		}
-
-		if (!StringUtils.hasText(stuName)) {
-//			res.setMessage("名字輸入錯誤");
-			res.setMessage(StudentSubjectRtnCode.DOUSTUDENT_REQIRED.getMessage());
-			return res;
-		}
-		Optional<Student> stuOp = studentDao.findById(stuNumber);
-		if (!stuOp.isPresent()) { // 如果資料庫裏面的資料跟我輸入的資料有符合則回傳有
-			Student student = new Student(stuNumber, stuName);
-			res.setStudent(student);
-//		res.setMessage("資料建立成功");
-			res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
-			studentDao.save(student);
-			return res;
-		}
-//		res.setMessage("此帳號已經存在");
-		res.setMessage(StudentSubjectRtnCode.DOUSTUDENT_REQIRED.getMessage());
-		return res;
-
-	}
-
-	// 7.選課 (加選)
-	// 問題 1.無法寫入兩項課目 //解決
-	// 問題 2.直接覆蓋原本選課
-	//
-	@Override
-	public StudentRes reviseStudentSubject(String stuNumber, String subNumber) {// String subNumber 改成Set<>()
-		// 建立學生選課, 找到學生資料並且寫入他的選課 (第一步先分開選課)
-		StudentRes res = new StudentRes();
-
-		if (!StringUtils.hasText(stuNumber)) {
-//			res.setMessage("輸入格式錯誤");
+		if (checkStudentNumberstudentName != null) {
 			res.setMessage(StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
 			return res;
 		}
-		if (!StringUtils.hasText(subNumber)) {// .if(!)subNumber=null or -->跳出,if(true)keep going
-//			res.setMessage("課堂輸入錯誤");
-			res.setMessage(StudentSubjectRtnCode.CLASS_REQIRED.getMessage());
+		Optional<Student> stuOp = studentDao.findById(studentNumber);
+		// 當學生學號不存在資料庫
+		if (!stuOp.isPresent()) {
+			// 則建立此學生資訊。建立資料後並且回傳訊息成功。
+			Student student = new Student(studentNumber, studentName);
+			studentDao.save(student);
+			res.setStudent(student);
+			res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
+			return res;
+		}
+		// 當學生學號已經使用,顯示帳號已經存在，結束執行。
+		res.setMessage(StudentSubjectRtnCode.EXISTSSTUDENT_REQIRED.getMessage());
+		return res;
+	}
+
+	/**
+	 * 顯示studentNumber /studentName 是否有值
+	 */
+	private SubjectRes checkStudentNumberstudentName(String studentNumber, String studentName) {
+
+		if (!StringUtils.hasText(studentNumber) || !StringUtils.hasText(studentName)) {
+			return new SubjectRes(null, StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
+		}
+
+		return null;
+	}
+
+	// 5.選課 (初選 /加選): 建立學生選課, 找到學生資料判斷是否衝堂/重複/超過學分 ，並且寫入他的選課
+	@Override
+	public StudentRes reviseStudentSubject(String studentNumber, String subjectNumber) {
+		StudentRes res = new StudentRes();
+
+		SubjectRes checkStudentSubject = checkStudentNumberSubjectNumber(studentNumber, subjectNumber);
+		// 判斷內容是否為空
+		if (checkStudentSubject != null) {
+			res.setMessage(StudentSubjectRtnCode.IMPORT_FAIL.getMessage());
 			return res;
 		}
 
-		Optional<Student> stuOp = studentDao.findById(stuNumber);//
-		if (!stuOp.isPresent()) {// 找到學生資料.if(!)學生的資訊=跳出if(true)學生的資訊keep going
-//			res.setMessage("此學生不存在");
+		Optional<Student> studentOp = studentDao.findById(studentNumber);
+		// 當學生學號不存在資料庫，回傳錯誤訊息並且跳出。
+		if (!studentOp.isPresent()) {
 			res.setMessage(StudentSubjectRtnCode.NOSTUDENTINFO_REQIRED.getMessage());
 			return res;
 		}
+		// 資料確認後接取得資訊
+		Student student = studentOp.get();
+		// 從資料庫取得該學生原本的選課
+		String studentSub = student.getSubNumber();
 
-		Student student = stuOp.get();// 接取得資訊
-		String stuSub = student.getSubNumber(); // 撈出該學生原本的選課
-		String[] stusubArray = null; // 如果原本學生資訊是null
-		List<String> suboldList = new ArrayList<>(); // 建立一個set接等等會取得的課程代碼
-		if (StringUtils.hasText(stuSub)) {
-			stusubArray = stuSub.split(","); // 用","切割
-			for (String item : stusubArray) {// 用foreach去接 並且加入倒set裡面
-				item = item.trim();
-				suboldList.add(item); // set儲存方法 add
-			}
+		// (原先學生選課)外部編輯私有方法 對字串做切割去空白並且存入LIST
+		List<String> subjectOldList = getStringList(studentSub);
+		// (新增學生選課)外部編輯私有方法 對字串做切割去空白並且存入LIST
+		List<String> subjectNewList = getStringList(subjectNumber);
+
+		// 當跟資料庫比對後無此課程,回傳錯誤訊息並且跳出。
+		List<Subject> subjectNewCheckList = subjectDao.findAllById(subjectNewList);
+
+		if (subjectNewCheckList.isEmpty()) {
+			res.setMessage(StudentSubjectRtnCode.NOCLASS_REQIRED.getMessage());
+			return res;
 		}
-		List<String> subNewList = new ArrayList<>();
-		String[] subNumArray = subNumber.split(",");// 學生新加選的課
-		for (String item : subNumArray) {
-			String str = item.trim();
-			subNewList.add(str); // 一樣去空白然後切割然後丟到set
-		}
-		// findaLL 撈出所有課程資料去比對輸入的課程名稱是否相同
-		// 減少比對次數
-		List<String> subCheckList = new ArrayList<>();
-		for (String item : subNewList) {
-			if (suboldList.contains(item)) {
-//				res.setMessage("選課重複 / 錯誤 ");
+
+		for (String item : subjectNewList) { // (原先學生選課)對比(新增學生選課)
+			if (subjectOldList.contains(item)) { // 當有相同課程代碼,回傳錯誤訊息並且跳出。
 				res.setMessage(StudentSubjectRtnCode.DUBCLASS_REQIRED.getMessage());
 				return res;
 			}
-			subCheckList.add(item);
-
+			subjectOldList.add(item); // 當條件符合則新增到subjectoldList。
 		}
+		// 在資料庫中取得資訊後續做對比
+		List<Subject> subjectLastList = subjectDao.findAllById(subjectOldList);
 
-		List<Subject> subjectd = subjectDao.findAllById(subCheckList);//
-		List<String> strSubList = new ArrayList<>();// 資料庫的SubNumber
-		for (Subject str : subjectd) {
-			strSubList.add(str.getSubNumber());
-		}
-		for (String item : subCheckList) {
-			if (!strSubList.contains(item)) {
-//				res.setMessage("查無此課~~");
-				res.setMessage(StudentSubjectRtnCode.NOCLASSINFO_REQIRED.getMessage());
-				return res;
-			}
-			suboldList.add(item);
-
-		}
-
-//		List<Subject> stusub = subjectDao.findAllById(subCheckList);// 原本的
-		boolean checkclass = checkclassName(subjectd);
-		if (checkclass) {
-//			res.setMessage("課程名稱重覆!!!!!");
-			res.setMessage(StudentSubjectRtnCode.DUBCLASS_REQIRED.getMessage());
+		// 判斷課程名字是否相同 / 時間衝堂
+		res = checkClassNameAndTime(subjectLastList);
+		if (res != null) {
 			return res;
 		}
 
-		boolean timeCheck = subjectTime(subjectd);
-		if (timeCheck) {
-//			res.setMessage("時間衝堂!!!!!");
-			res.setMessage(StudentSubjectRtnCode.DUBCLASSADD_REQIRED.getMessage());
-			return res;
+		res = new StudentRes();
+		// 當條件符合，取出其學分數做加總。
+		int totalUnit = 0;
+		for (Subject item2 : subjectLastList) {
+			totalUnit += item2.getUnits();
 		}
 
-		int totunit = 0;
-		for (Subject item2 : subjectd) {
-			totunit += item2.getUnits();
-
-		}
-
-		if (totunit > 10) {
-//			res.setMessage("已經超過10學分不得選課");
+		if (totalUnit > 10) { // 當學分總數超過10學分,回傳錯誤訊息並且跳出。
 			res.setMessage(StudentSubjectRtnCode.OVERUNITS_REQIRED.getMessage());
 			return res;
-
-		} else {
-			res.setMessage("總學分: " + totunit);
 		}
-
-		// Subject subject = subOp.get();
-
-		student.setSubNumber(suboldList.toString().substring(1, (suboldList.toString().length() - 1)));
+		// 當條件符合存入後回傳成功
+		student.setSubjectNumber(subjectOldList.toString().substring(1, (subjectOldList.toString().length() - 1)));
 		studentDao.save(student);
-//		res.setMessage("選課成功!");
 		res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
 		return res;
 	}
 
-	// 8.刪除學生選課
-	// 問題1. 只能刪除第一筆
-	@Override
-	public StudentRes deletStudentSubject(String stuNumber, String subNumber) {
-		// TODO Auto-generated method stub
-		StudentRes res = new StudentRes();
-		if (!StringUtils.hasText(stuNumber)) {
-//			res.setMessage("輸入資訊錯誤 /只能刪除單堂課程");
-			res.setMessage(StudentSubjectRtnCode.DELET_REQIRED.getMessage());
-		}
-		if (!StringUtils.hasText(subNumber)) {// .if(!)subNumber=null or -->跳出,if(true)keep going
-//			res.setMessage("課堂輸入錯誤");
-			res.setMessage(StudentSubjectRtnCode.CLASS_REQIRED.getMessage());
-			return res;
-		}
+	/**
+	 * 檢驗 學生學號 & 課程代碼是否符合格式
+	 */
+	private SubjectRes checkStudentNumberSubjectNumber(String studentNumber, String subjectNumber) {
 
-		Optional<Student> stuOp = studentDao.findByStuNumber(stuNumber);
-		if (!stuOp.isPresent()) {// 找到學生資料.if(!)學生的資訊=跳出if(true)學生的資訊keep going
-//			res.setMessage("此學生不存在");
-			res.setMessage(StudentSubjectRtnCode.NOSTUDENTINFO_REQIRED.getMessage());
-			return res;
-		}
-		List<String> oldSubjectList = new ArrayList<>();
-		Student student = stuOp.get();// 接取得資訊
-		String stuSub = student.getSubNumber(); // 撈出該學生原本的選課
-		String[] deletSubjectArray = stuSub.split(","); // 切割字串 然後分開帶入Set
-		for (String delet : deletSubjectArray) {
-			String deletStr = delet.trim();// 加入的字串去空白
-			oldSubjectList.add(deletStr);
-		}
-		if (oldSubjectList.isEmpty()) {
-//	     	res.setMessage("刪除失敗");
-//		    return res;
-			res.setMessage(StudentSubjectRtnCode.DELET_REQIRED.getMessage());
-			return res;
-		}
-		List<String> reSubjectlist = new ArrayList<>();
-		for (String deletsub : oldSubjectList) {
-			if (!deletsub.equalsIgnoreCase(subNumber)) {
+		if (!StringUtils.hasText(studentNumber) || !StringUtils.hasText(subjectNumber)) {
 
-				reSubjectlist.add(subNumber);
-//				res.setMessage("刪除成功");
-
-			}
-		}
-		res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
-		student.setSubNumber(reSubjectlist.toString().substring(1, (reSubjectlist.toString().length() - 1)));
-		studentDao.save(student);
-		return res;
-	}
-
-	// 9.學生資訊
-	@Override
-	public List<Student> getStudentInfo() {
-//		List<Student> list = studentDao.findAll();
-		return studentDao.findAll();
-	}
-
-	// 10.用學號查詢學生選課
-	@Override // 需修改顯現 res.setList1(list1);
-	public StudentRes findByStuNumber(String stuNumber) {
-		StudentRes res = new StudentRes();
-
-		if (!StringUtils.hasText(stuNumber)) {
-//			res.setMessage("輸入格式錯誤");
-//			return res;
-			res.setMessage(StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
-			return res;
-		}
-		Optional<Student> studentOp = studentDao.findById(stuNumber);
-		if (!studentOp.isPresent()) {
-//			res.setMessage("查無此學生資訊");
-//			return res;
-			res.setMessage(StudentSubjectRtnCode.NOSTUDENTINFO_REQIRED.getMessage());
-			return res;
-		}
-		String subNumber = studentOp.get().getSubNumber();// 從資料庫撈出學生原本的選課
-		List<String> subnuList = new ArrayList<>();
-		String[] subNumArray = subNumber.split(",");
-		for (String item : subNumArray) {
-			String str = item.trim();
-			subnuList.add(str); // 一樣去空白然後切割然後丟到set
-		} // -->現在getStudentSubNumber 裡面已經存了stuNumber中取得的subjectNumber
-		List<Subject> getStudentSubNumber = new ArrayList<>();
-		// 上方方法準備儲存等等切割出來的String
-		for (String item : subnuList) {
-			Optional<Subject> subop = subjectDao.findBySubNumber(item);
-			Subject stusubcheck = subop.get();
-			getStudentSubNumber.add(stusubcheck);
-		}
-		res.setStudent(studentOp.get());
-		res.setSubjectList(getStudentSubNumber);
-//		res.setMessage("查詢成功");
-//		return res;
-		res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
-		return res;
-
-	}
-
-	// 11.透過課堂編碼查詢課堂資訊
-	@Override
-	public SubjectRes findBySubNumber(String subNumber) {
-		SubjectRes res = new SubjectRes();
-		if (!StringUtils.hasText(subNumber)) {
-//			res.setMessage("輸入格式錯誤");
-//			return res;
-			return res = new SubjectRes(null, StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
-
-		}
-		Optional<Subject> subOp = subjectDao.findById(subNumber);
-
-		if (!subOp.isPresent()) {
-//			res.setMessage("查無此課程");
-//			return res;
-			return res = new SubjectRes(null, StudentSubjectRtnCode.CLASS_REQIRED.getMessage());
-
-		}
-//		
-		res.setSubject(subOp.get());
-//		res.setMessage("查詢成功");
-		return res = new SubjectRes(null, StudentSubjectRtnCode.SUCCESSFUL.getMessage());
-
-	}
-
-	// 12.透過課堂名稱找尋課堂資訊
-	@Override
-	public SubjectRes findBySubName(String subName) {
-		SubjectRes res = new SubjectRes();
-		if (!StringUtils.hasText(subName)) {
-//			res.setMessage("輸入格式錯誤");
-//			return res;
 			return new SubjectRes(null, StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
 		}
-		List<Subject> sublist = subjectDao.findAllBySubName(subName);
-		res.setList(sublist);
-		return res;
+		return null;
 	}
 
-	/* ===========================判斷時間============================ */
+	/**
+	 * 1. 將字串做切割 2. 去空白後存入LIST
+	 */
+	private List<String> getStringList(String stringArray) {
+
+		List<String> stringList = new ArrayList<>(); // 建立一個list接取得的課程代碼
+		if (StringUtils.hasText(stringArray)) {
+			String[] subjectNumArray = stringArray.split(",");
+			for (String item : subjectNumArray) {
+				String str = item.trim();
+				stringList.add(str);
+			}
+		}
+		return stringList;
+	}
+
+	/**
+	 * 判斷時間是否衝堂 1. A課堂上課的時間 介於 B課堂上課中間 -->衝堂 2. A課堂下課的時間 介於 B課堂上課中間 -->衝堂
+	 */
 	private boolean subjectTime(List<Subject> stusub) {
-//		List<Subject> stusub = subjectDao.findAllById(subNumber);
-// 		把所有的資料丟到list
-//		boolean test = false;
+
 		for (int i = 0; i < (stusub.size() - 1); i++) {
 			Subject subject = stusub.get(i);
+
 			for (int j = i + 1; j < (stusub.size()); j++) {
-				Subject Subjectj = stusub.get(j);
-				if (subject.getSubDate() == Subjectj.getSubDate()) {
-					if (subject.getStartTime() >= Subjectj.getStartTime()
-							&& subject.getStartTime() <= Subjectj.getEndTime()
-							|| subject.getEndTime() >= Subjectj.getStartTime()
-									&& subject.getEndTime() <= Subjectj.getEndTime()) {
+				Subject subject1 = stusub.get(j);
+
+				if (subject.getSubjectDate() == subject1.getSubjectDate()) {
+
+					if (subject.getStartTime() >= subject1.getStartTime()
+							&& subject.getStartTime() <= subject1.getEndTime()
+
+							|| subject.getEndTime() >= subject1.getStartTime()
+									&& subject.getEndTime() <= subject1.getEndTime()) {
 						return true;
 					}
 				}
@@ -461,15 +313,38 @@ public class StudentSubjectServiceImpl implements StudentSubjectService {
 		return false;
 	}
 
-	
-	/* ===================判斷課程有沒有重複==================== */
+	/**
+	 * 將判斷是否重複或者衝堂的方法拉出
+	 */
+	private StudentRes checkClassNameAndTime(List<Subject> subjectLastList) {
+		StudentRes res = new StudentRes();
+
+		boolean checkclass = checkclassName(subjectLastList);
+		if (checkclass) {
+			res.setMessage(StudentSubjectRtnCode.DUBCLASS_REQIRED.getMessage()); // 顯示課程名稱重複
+			return res;
+		}
+
+		boolean timeCheck = subjectTime(subjectLastList);
+		if (timeCheck) {
+			res.setMessage(StudentSubjectRtnCode.DUBCLASSTIME_REQIRED.getMessage());
+			return res;
+		}
+		return null;
+	}
+
+	/**
+	 * 判斷課程名稱有沒有重複
+	 */
 	private boolean checkclassName(List<Subject> className) {
-//		List<Subject> className = subjectDao.findAllById(subNumber);
+
 		for (int i = 0; i < (className.size() - 1); i++) {
-			Subject Subject = className.get(i);
+			Subject subject = className.get(i);
+
 			for (int j = i + 1; j < (className.size()); j++) {
-				Subject Subjectj = className.get(j);
-				if (Subject.getSubName().equalsIgnoreCase(Subjectj.getSubName())) {
+				Subject subject1 = className.get(j);
+
+				if (subject.getSubjectName().equalsIgnoreCase(subject1.getSubjectName())) {
 					return true;
 				}
 			}
@@ -477,5 +352,105 @@ public class StudentSubjectServiceImpl implements StudentSubjectService {
 		return false;
 	}
 
-	/* ======================================================= */
+	@Override // 6.學生退選課程 : 限定一次只刪除一堂課程
+	public StudentRes deletStudentSubject(String studentNumber, String subjectNumber) {
+
+		StudentRes res = new StudentRes();
+		// 判斷內容是否為空
+		SubjectRes checkStudentSubject = checkStudentNumberSubjectNumber(studentNumber, subjectNumber);
+		if (checkStudentSubject != null) {
+			res.setMessage(StudentSubjectRtnCode.IMPORT_FAIL.getMessage());
+			return res;
+		}
+		// 當資料庫不存在學生資訊，回傳錯誤訊息並且跳出。
+		Optional<Student> studentOp = studentDao.findByStudentNumber(studentNumber);
+		if (!studentOp.isPresent()) {
+			res.setMessage(StudentSubjectRtnCode.NOSTUDENTINFO_REQIRED.getMessage());
+			return res;
+		}
+
+		Student student = studentOp.get();
+		String studentSubject = student.getSubNumber(); // 取出學生的選課字串在私有法做切割動作帶入list中
+		List<String> oldSubjectList = getStringList(studentSubject);
+
+		// 將輸入的課程跟(原先選課)對比,若無此課則回傳錯誤訊息並且跳出
+		if (!oldSubjectList.contains(subjectNumber)) {
+			res.setMessage(StudentSubjectRtnCode.NOCLASS_REQIRED.getMessage());
+			return res;
+		}
+		// 當資料符合，將其移除,字串存入資料庫並且回傳成功訊襑。
+		oldSubjectList.remove(subjectNumber);
+		student.setSubjectNumber(oldSubjectList.toString().substring(1, (oldSubjectList.toString().length() - 1)));
+		studentDao.save(student);
+		res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
+		return res;
+	}
+
+	// 7.用學號查詢學生選課
+	@Override
+	public StudentRes SearchStudentNumber(String studentNumber) {
+
+		StudentRes res = new StudentRes();
+		// 判斷內容是否為空
+		if (!StringUtils.hasText(studentNumber)) {
+			res.setMessage(StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
+			return res;
+		}
+
+		// 對比資料庫中,若無此學生訊息則回傳錯誤訊息並且跳出。
+		Optional<Student> studentOp = studentDao.findById(studentNumber);
+		if (!studentOp.isPresent()) {
+			res.setMessage(StudentSubjectRtnCode.NOSTUDENTINFO_REQIRED.getMessage());
+			return res;
+		}
+		// 當取得學生選課代碼字串做切割放入list中
+		String subjectNumber = studentOp.get().getSubNumber();
+		List<String> subjectNumberuList = getStringList(subjectNumber);
+
+		// 對比資料庫取得課程資訊並且存入LIST
+		List<Subject> getStudentSubjectNumber = new ArrayList<>();
+		for (String item : subjectNumberuList) {
+			Optional<Subject> subOp = subjectDao.findBySubjectNumber(item);
+			Subject studentSubjectcheck = subOp.get();
+			getStudentSubjectNumber.add(studentSubjectcheck);
+		}
+
+		// 當條件符合存入後回傳list & 成功
+		res.setStudent(studentOp.get());
+		res.setSubjectList(getStudentSubjectNumber);
+		res.setMessage(StudentSubjectRtnCode.SUCCESSFUL.getMessage());
+		return res;
+	}
+
+	// 8.透過課堂編碼查詢課堂資訊
+	@Override
+	public SubjectRes searchSubNumber(String subjectNumber) {
+		// 判斷內容是否為空
+		if (!StringUtils.hasText(subjectNumber)) {
+			return new SubjectRes(null, StudentSubjectRtnCode.CLASS_REQIRED.getMessage());
+		}
+		// 對比資料庫中,若無此課程訊息則回傳錯誤訊息並且跳出。
+		Optional<Subject> subjectOp = subjectDao.findById(subjectNumber);
+		if (!subjectOp.isPresent()) {
+			return new SubjectRes(null, StudentSubjectRtnCode.CLASS_REQIRED.getMessage());
+		}
+		// 當條件符合-->顯示課堂資訊&成功
+		Subject subject = subjectOp.get();
+		return new SubjectRes(subject, StudentSubjectRtnCode.SUCCESSFUL.getMessage());
+	}
+
+	// 9.透過課堂名稱找尋課堂資訊
+	@Override
+	public SubjectRes searchSubjectName(String subjectName) {
+		SubjectRes res = new SubjectRes();
+		// 當結果格式錯誤，回傳錯誤訊息並且跳出。
+		if (!StringUtils.hasText(subjectName)) {
+			return new SubjectRes(null, StudentSubjectRtnCode.CREAT_REQIRED.getMessage());
+		}
+		// 當條件符合顯示課堂資訊&成功
+		List<Subject> subjectlist = subjectDao.findAllBySubjectName(subjectName);
+		res.setList(subjectlist);
+		return res;
+	}
+
 }

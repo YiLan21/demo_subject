@@ -1,45 +1,46 @@
 package com.example.demo_subject.vo;
 
-import javax.persistence.Id;
+//import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class StudentReq {
 
 	@JsonProperty("stuName")
-	private String stuName;
-	
+	private String studentName;
 	@JsonProperty("stuNumber")
-	private String stuNumber;
+	private String studentNumber;
 	@JsonProperty("subNumber")
-	private String subNumber;
+	private String subjectNumber;
 	
-
+	/* ================================================ */
+	
 	public StudentReq() {
 
 	}
-
-	public String getStuName() {
-		return stuName;
+	/* ================================================ */
+	
+	public String getStudentName() {
+		return studentName;
 	}
 
-	public void setStuName(String stuName) {
-		this.stuName = stuName;
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
 	}
 
-	public String getStuNumber() {
-		return stuNumber;
+	public String getStudentNumber() {
+		return studentNumber;
 	}
 
-	public void setStuNumber(String stuNumber) {
-		this.stuNumber = stuNumber;
+	public void setStudentNumber(String studentNumber) {
+		this.studentNumber = studentNumber;
 	}
 
-	public String getSubNumber() {
-		return subNumber;
+	public String getSubjectNumber() {
+		return subjectNumber;
 	}
 
-	public void setSubNumber(String subNumber) {
-		this.subNumber = subNumber;
+	public void setSubjectNumber(String subjectNumber) {
+		this.subjectNumber = subjectNumber;
 	}
 }

@@ -1,5 +1,6 @@
 package com.example.demo_subject.entity;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,58 +9,55 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "student")
 public class Student {
-	/*
-	 * 資料庫如果沒有對照的項目不可在此處新增
-	 * 或者還沒用到前先註解掉
-	 * 
-	 * */
+	
 	@Id
 	@Column(name = "stu_number")
-	private String stuNumber;
+	private String studentNumber; //學生學號
+	
 	@Column(name = "sub_number")
-	private String subNumber;
+	private String subjectNumber; //課程代碼
 
-	@Column(name = "stu_name")
-	private String stuName;
+	@Column(name = "stu_name")   
+	private String studentName;   //學生姓名
 
 	public Student() {
 
 	}
 
-	public Student(String stuName, String stuNumber, String subNumber) {
-		this.stuName = stuName;
-		this.stuNumber = stuNumber;
-		this.subNumber = subNumber;
+	public Student(String studentName, String stdentNumber, String subjectNumber) {
+		this.studentName = studentName;
+		this.studentNumber = stdentNumber;
+		this.subjectNumber = subjectNumber;
 
 	}
 
-	public Student( String stuNumber,String stuName) {
-		this.stuNumber = stuNumber;
-		this.stuName = stuName;
+	public Student( String studentNumber,String studentName) {
+		this.studentNumber = studentNumber;
+		this.studentName = studentName;
 	}
 
 	public String getStuName() {
-		return stuName;
+		return studentName;
 	}
 
-	public void setStuName(String stuName) {
-		this.stuName = stuName;
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
 	}
 
-	public String getStuNumber() {
-		return stuNumber;
+	public String getStudentNumber() {
+		return studentNumber;
 	}
 
 	public void setStuNumber(String stuNumber) {
-		this.stuNumber = stuNumber;
+		this.studentNumber = stuNumber;
 	}
 
 	public String getSubNumber() {
-		return subNumber;
+		return subjectNumber;
 	}
 
-	public void setSubNumber(String subNumber) {
-		this.subNumber = subNumber;
+	public void setSubjectNumber(String subjectNumber) {
+		this.subjectNumber = subjectNumber;
 	}
 
 }

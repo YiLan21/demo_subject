@@ -11,15 +11,11 @@ import com.example.demo_subject.entity.Subject;
 @Repository
 public interface SubjectDao extends JpaRepository<Subject, String> {
 
-	public List<Subject> findAllBySubName(String subName);
-	/*
-	 * 自己要新增list findAllBySubName 的這方法 ; 所以要來Dao宣告 並寫輸入輸入值得型態
-	 */
-	public List<Subject> findAllBySubNumber(String subNumber);
+	public List<Subject> findAllBySubjectName(String subjectName);
 
-	public Optional<Subject> findBySubNumber(String subNumber);
-//	public List<Subject> findAllBySubNumber(List<String> subNumberList);
-	// public Optional<Subject> findBySubNumber(List<String> subNumberList);
+	public List<Subject> findAllBySubjectNumber(String subjectNumber);
 
-	public List<Subject> findAllBysubNumber(String subNumber);
+	public Optional<Subject> findBySubjectNumber(String subjectNumber);
+
+	public List<Subject> findAllBysubjectNumber(String subjectNumber);
 }

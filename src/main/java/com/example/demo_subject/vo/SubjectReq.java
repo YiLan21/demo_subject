@@ -3,32 +3,39 @@ package com.example.demo_subject.vo;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Id;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 public class SubjectReq {
 
 	@JsonProperty("subNumber")
-	private String subNumber;
+	private String subjectNumber;
+
 	@JsonProperty("subName")
-	private String subName;
+	private String subjectName;
+
 	@JsonProperty("subDate")
-	private int subDate;
+	private int subjectDate;
+
 	@JsonProperty("startTime")
 	private int startTime;
+
 	@JsonProperty("endTime")
 	private int endTime;
+
 	@JsonProperty("units")
 	private int units;
-	
-    List<SubjectReq>list = new ArrayList<>();
-    
+
+	/* ================================================ */
+
+	List<SubjectReq> list = new ArrayList<>();
+
+	/* ================================================ */
+
 	public SubjectReq() {
 
 	}
 
+	/* ================================================ */
 	public List<SubjectReq> getList() {
 		return list;
 	}
@@ -37,28 +44,28 @@ public class SubjectReq {
 		this.list = list;
 	}
 
-	public String getSubNumber() {
-		return subNumber;
+	public String getSubjectNumber() {
+		return subjectNumber;
 	}
 
-	public void setSubNumber(String subNumber) {
-		this.subNumber = subNumber;
+	public void setSubjectNumber(String subjectNumber) {
+		this.subjectNumber = subjectNumber;
 	}
 
-	public String getSubName() {
-		return subName;
+	public String getSubjectName() {
+		return subjectName;
 	}
 
-	public void setSubName(String subName) {
-		this.subName = subName;
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
 	}
 
-	public int getSubDate() {
-		return subDate;
+	public int getSubjectDate() {
+		return subjectDate;
 	}
 
-	public void setSubDate(int subDate) {
-		this.subDate = subDate;
+	public void setSubjectDate(int subjectDate) {
+		this.subjectDate = subjectDate;
 	}
 
 	public int getStartTime() {

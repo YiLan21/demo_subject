@@ -9,7 +9,7 @@ import com.example.demo_subject.entity.Student;
 @Repository
 public interface StudentDao extends JpaRepository<Student, String >{
 
-	public Optional<Student> findByStuNumber(String stuNumber);
+	public Optional<Student> findByStudentNumber(String studentNumber);
 	
-	public Optional<Student> findBySubNumber(String subNumber);
+	public Optional<Student> findBySubjectNumber(String subjectNumber);
 }

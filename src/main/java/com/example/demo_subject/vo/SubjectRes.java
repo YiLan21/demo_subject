@@ -10,31 +10,34 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class SubjectRes {
 
 	private String subNumber;
-
 	private String subName;
-
 	private Integer subDate;
-
 	private Integer startTime;
-
 	private Integer endTime;
-
 	private Integer units;
-
 	private String Message;
-
 	private Subject subject;
-	
+
+	/* =================================================== */
+
 	private List<Subject> list;
-	
-	public SubjectRes(Subject subject, String Message) {
-		this.subject = subject;
-		this.Message = Message;
-	}
+
+	/* ==================================================== */
 	public SubjectRes() {
 
 	}
-	
+
+	public SubjectRes(Subject subject) {
+
+		this.subject = subject;
+	}
+
+	public SubjectRes(Subject subject, String Message) {
+
+		this.subject = subject;
+		this.Message = Message;
+	}
+
 	public SubjectRes(String subNumber, String subName, Integer subDate, Integer startTime, Integer endTime,
 			Integer units) {
 
@@ -46,15 +49,7 @@ public class SubjectRes {
 		this.units = units;
 	}
 
-	
-	public SubjectRes(Subject subject) {
-		this.subject = subject ;
-	}
-	
-	
-	
-	
-	
+	/* ================================================ */
 
 	public Subject getSubject() {
 		return subject;
@@ -63,9 +58,6 @@ public class SubjectRes {
 	public void setSubject(Subject subject) {
 		this.subject = subject;
 	}
-
-	
-
 
 	public String getMessage() {
 		return Message;

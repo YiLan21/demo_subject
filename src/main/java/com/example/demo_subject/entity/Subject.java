@@ -8,64 +8,71 @@ import javax.persistence.Table;
 @Entity
 @Table(name= "subject")
 public class Subject {
+	
 	@Id
 	@Column(name = "sub_number")
-	private String subNumber;
+	private String subjectNumber;  //課程代碼
+	
 	@Column(name = "sub_name")
-	private String subName;
+	private String subjectName;   //課程名稱
+	
 	@Column(name = "sub_date")
-	private int subDate ;
+	private int subjectDate ;     //課程日期
+	
 	@Column(name = "start_time")
-	private int startTime ;
+	private int startTime ;      //課程開始時間
+	
 	@Column(name = "end_time")
-	private int endTime ;
+	private int endTime ;        //課程結束時間
+	
 	@Column(name = "units")
-	private int units ;
+	private int units ;         //課程學分
+	
 	
 	public Subject() {
 		
 	}
 	
-	public Subject(String subNumber,String subName,Integer subDate ,Integer startTime, Integer endTime ,Integer units) {
-		this.subNumber = subNumber;
-		this.subName =subName;
-		this.subDate=subDate;
+	public Subject(String subjectNumber,String subjectName,Integer subjectDate ,Integer startTime, Integer endTime ,Integer units) {
+		this.subjectNumber = subjectNumber;
+		this.subjectName =subjectName;
+		this.subjectDate=subjectDate;
 		this.startTime=startTime;
 		this.endTime=endTime;
 		this.units=units;
 		
 	}
-	public Subject(String subName,Integer subDate ,Integer startTime, Integer endTime ,Integer units) {
-		this.subName =subName;
-		this.subDate=subDate;
+	public Subject(String subjectName,Integer subjectDate ,Integer startTime, Integer endTime ,Integer units) {
+		this.subjectName =subjectName;
+		this.subjectDate=subjectDate;
 		this.startTime=startTime;
 		this.endTime=endTime;
 		this.units=units;
 		
 	}
 
-	public String getSubNumber() {
-		return subNumber;
+	public String getSubjectNumber() {
+		return subjectNumber;
 	}
 
-	public void setSubNumber(String subNumber) {
-		this.subNumber = subNumber;
+	public void setSubjectNumber(String subjectNumber) {
+		this.subjectNumber = subjectNumber;
 	}
 
-	public String getSubName() {
-		return subName;
+	public String getSubjectName() {
+		return subjectName;
 	}
 
-	public void setSubName(String subName) {
-		this.subName = subName;
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
 	}
 
-	public int getSubDate() {
-		return subDate;
+	public int getSubjectDate() {
+		return subjectDate;
 	}
 
-	public void setSubDate(int subDate) {
-		this.subDate = subDate;
+	public void setSubjectDate(int subjectDate) {
+		this.subjectDate = subjectDate;
 	}
 
 	public int getStartTime() {

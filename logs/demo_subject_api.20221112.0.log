@@ -1,0 +1,28 @@
+07:20:20.664 INFO  [main][DemoSubjectApplication.logStarting(StartupInfoLogger.java:55)] Starting DemoSubjectApplication using Java 17.0.2 on LAPTOP-PSE5O2M2 with PID 3804 (C:\java_project\demo_subject\bin\main started by Vivobook Pro in C:\java_project\demo_subject)
+07:20:20.668 INFO  [main][DemoSubjectApplication.logStartupProfileInfo(SpringApplication.java:634)] No active profile set, falling back to 1 default profile: "default"
+07:20:21.722 INFO  [main][RepositoryConfigurationDelegate.registerRepositoriesIn(RepositoryConfigurationDelegate.java:132)] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+07:20:21.821 INFO  [main][RepositoryConfigurationDelegate.registerRepositoriesIn(RepositoryConfigurationDelegate.java:201)] Finished Spring Data repository scanning in 79 ms. Found 2 JPA repository interfaces.
+07:20:22.614 INFO  [main][TomcatWebServer.initialize(TomcatWebServer.java:108)] Tomcat initialized with port(s): 8080 (http)
+07:20:22.626 INFO  [main][Http11NioProtocol.log(DirectJDKLog.java:173)] Initializing ProtocolHandler ["http-nio-8080"]
+07:20:22.626 INFO  [main][StandardService.log(DirectJDKLog.java:173)] Starting service [Tomcat]
+07:20:22.627 INFO  [main][StandardEngine.log(DirectJDKLog.java:173)] Starting Servlet engine: [Apache Tomcat/9.0.68]
+07:20:23.867 INFO  [main][[/].log(DirectJDKLog.java:173)] Initializing Spring embedded WebApplicationContext
+07:20:23.868 INFO  [main][ServletWebServerApplicationContext.prepareWebApplicationContext(ServletWebServerApplicationContext.java:292)] Root WebApplicationContext: initialization completed in 3137 ms
+07:20:24.032 INFO  [main][HikariDataSource.getConnection(HikariDataSource.java:110)] HikariPool-1 - Starting...
+07:20:24.234 INFO  [main][HikariDataSource.getConnection(HikariDataSource.java:123)] HikariPool-1 - Start completed.
+07:20:24.301 INFO  [main][LogHelper.logPersistenceUnitInformation(LogHelper.java:31)] HHH000204: Processing PersistenceUnitInfo [name: default]
+07:20:24.393 INFO  [main][Version.logVersion(Version.java:44)] HHH000412: Hibernate ORM core version 5.6.12.Final
+07:20:24.608 INFO  [main][Version.<clinit>(JavaReflectionManager.java:56)] HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+07:20:24.754 INFO  [main][Dialect.<init>(Dialect.java:175)] HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+07:20:25.317 INFO  [main][JtaPlatformInitiator.initiateService(JtaPlatformInitiator.java:52)] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+07:20:25.326 INFO  [main][LocalContainerEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:437)] Initialized JPA EntityManagerFactory for persistence unit 'default'
+07:20:26.161 WARN  [main][JpaBaseConfiguration$JpaWebConfiguration.openEntityManagerInViewInterceptor(JpaBaseConfiguration.java:219)] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+07:20:26.374 INFO  [main][PropertySourcedRequestMappingHandlerMapping.initHandlerMethods(PropertySourcedRequestMappingHandlerMapping.java:69)] Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+07:20:26.741 INFO  [main][Http11NioProtocol.log(DirectJDKLog.java:173)] Starting ProtocolHandler ["http-nio-8080"]
+07:20:26.776 INFO  [main][TomcatWebServer.start(TomcatWebServer.java:220)] Tomcat started on port(s): 8080 (http) with context path ''
+07:20:26.778 INFO  [main][DocumentationPluginsBootstrapper.start(DocumentationPluginsBootstrapper.java:160)] Context refreshed
+07:20:26.804 INFO  [main][DocumentationPluginsBootstrapper.start(DocumentationPluginsBootstrapper.java:163)] Found 1 custom documentation plugin(s)
+07:20:26.846 INFO  [main][ApiListingReferenceScanner.scan(ApiListingReferenceScanner.java:41)] Scanning for api listing references
+07:20:26.997 WARN  [main][CachingModelPropertiesProvider.propertiesFor(CachingModelPropertiesProvider.java:66)] Exception calculating properties for model(com.example.demo_subject.vo.StudentRes) -> ModelContext{groupName=default, type=com.example.demo_subject.vo.StudentRes, isReturnType=true}. java.lang.IllegalArgumentException: Conflicting setter definitions for property "list": com.example.demo_subject.vo.StudentRes#setList(java.util.Optional) vs com.example.demo_subject.vo.StudentRes#setList(java.util.List)
+07:20:27.001 WARN  [main][CachingModelPropertiesProvider.propertiesFor(CachingModelPropertiesProvider.java:66)] Exception calculating properties for model(com.example.demo_subject.vo.StudentRes) -> ModelContext{groupName=default, type=com.example.demo_subject.vo.StudentRes, isReturnType=true}. java.lang.IllegalArgumentException: Conflicting setter definitions for property "list": com.example.demo_subject.vo.StudentRes#setList(java.util.Optional) vs com.example.demo_subject.vo.StudentRes#setList(java.util.List)
+07:20:27.077 INFO  [main][DemoSubjectApplication.logStarted(StartupInfoLogger.java:61)] Started DemoSubjectApplication in 6.807 seconds (JVM running for 15.725)

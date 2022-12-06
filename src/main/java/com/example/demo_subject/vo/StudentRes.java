@@ -9,20 +9,57 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudentRes {
+
 	private String stuName;
 	private String stuNumber;
 	private String subNumber;
 	private String units;
 	private String Message;
 	private Student student;
+
+	/* ================================================ */
+	private List<Student> studentList;
+	private List<Subject> subjectList;
+
+	/* ================================================ */
+
+	public StudentRes() {
+
+	}
+
+	public StudentRes(Student student, String Message) {
+
+		this.student = student;
+		this.Message = Message;
+	}
+
+	public StudentRes(String stuName, String stuNumber) {
+
+		this.stuName = stuNumber;
+		this.stuNumber = stuNumber;
+	}
+
+	public StudentRes(String stuName, String stuNumber, String subNumber) {
+		
+		this.stuName = stuNumber;
+		this.stuNumber = stuNumber;
+		this.subNumber = subNumber;
+	}
+
+	public StudentRes(String stuName, String stuNumber, String subNumber, String units) {
+		
+		this.stuName = stuNumber;
+		this.stuNumber = stuNumber;
+		this.subNumber = subNumber;
+		this.units = units;
+	}
+
+	/* ================================================ */
+
 	public Student getStudent() {
 		return student;
 	}
 
-	public StudentRes(Student student, String Message) {
-		this.student = student;
-		this.Message = Message;
-	}
 	public void setStudent(Student student) {
 		this.student = student;
 	}
@@ -34,9 +71,6 @@ public class StudentRes {
 	public void setMessage(String message) {
 		Message = message;
 	}
-
-	private List<Student> studentList;
-	private List<Subject> subjectList;
 
 	public List<Student> getStudentList() {
 		return studentList;
@@ -56,31 +90,6 @@ public class StudentRes {
 
 	public void setSubNumber(String subNumber) {
 		this.subNumber = subNumber;
-	}
-
-	public StudentRes(String stuName, String stuNumber) {
-		this.stuName = stuNumber;
-		this.stuNumber = stuNumber;
-
-	}
-
-	public StudentRes(String stuName, String stuNumber, String subNumber) {
-		this.stuName = stuNumber;
-		this.stuNumber = stuNumber;
-		this.subNumber = subNumber;
-
-	}
-
-	public StudentRes(String stuName, String stuNumber, String subNumber, String units) {
-		this.stuName = stuNumber;
-		this.stuNumber = stuNumber;
-		this.subNumber = subNumber;
-		this.units = units;
-
-	}
-
-	public StudentRes() {
-
 	}
 
 	public String getStuName() {
@@ -127,4 +136,7 @@ public class StudentRes {
 		// TODO Auto-generated method stub
 
 	}
+
+	/* =====================¥H¤WGET SET=========================== */
+
 }
